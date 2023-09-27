@@ -12,6 +12,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'категория',
         verbose_name_plural = 'категории'
+        ordering = ['name']
 
 
 class Studios(models.Model):
@@ -24,6 +25,8 @@ class Studios(models.Model):
     class Meta:
         verbose_name = 'студия'
         verbose_name_plural = 'студии'
+        ordering = ['name']
+
 
 
 
@@ -37,6 +40,7 @@ class Genre(models.Model):
     class Meta:
         verbose_name = 'жанр'
         verbose_name_plural = 'жанры'
+        ordering = ['name']
 
 
 class Anime(models.Model):
@@ -66,6 +70,7 @@ class Anime(models.Model):
     class Meta:
         verbose_name = 'аниме',
         verbose_name_plural = 'аниме'
+        ordering = ['title']
 
 
 class Episode(models.Model):
@@ -80,3 +85,4 @@ class Episode(models.Model):
     class Meta:
         verbose_name = 'эпизод'
         verbose_name_plural = 'эпизоды'
+        ordering = ['title']
