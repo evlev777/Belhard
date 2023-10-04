@@ -36,8 +36,8 @@ class Studio(models.Model):
         verbose_name_plural = "студии"
         ordering = ["name"]
         constraints = (
-            models.CheckConstraint(check=Q(name__length_gte=2), name='studio-length'),
-            models.CheckConstraint(check=Q(slug__length_gte=2), name='studio_slug-length'),
+            models.CheckConstraint(check=Q(name__length__gte=2), name='studio-length'),
+            models.CheckConstraint(check=Q(slug__length__gte=2), name='studio_slug-length'),
         )
 
 
@@ -70,8 +70,8 @@ class Quality(models.Model):
         verbose_name_plural = "качество"
         ordering = ["name"]
         constraints = (
-            models.CheckConstraint(check=Q(name__length_gte=2), name='quality-length'),
-            models.CheckConstraint(check=Q(slug__length_gte=2), name='quality_slug-length')
+            models.CheckConstraint(check=Q(name__length__gte=2), name='quality-length'),
+            models.CheckConstraint(check=Q(slug__length__gte=2), name='quality_slug-length')
         )
 
 
@@ -81,6 +81,7 @@ class Anime(models.Model):
     sub_title = models.CharField(max_length=128, blank=False, null=False, verbose_name='подназвание аниме')
     slug = models.SlugField(max_length=128, blank=False, null=False, unique=True, verbose_name='URL')
     description = models.TextField(blank=True, null=True, verbose_name='описание')
+    image = models.ImageField()
 
     date_created = models.DateTimeField(default=now, verbose_name='дата опубликования')
     duration = models.IntegerField(default=0, verbose_name='продолжительность аниме')
@@ -94,6 +95,11 @@ class Anime(models.Model):
     def date(self):
         return self.date_created.strftime("%H:%M %d %m %Y")
 
+    def display_genre(self):
+        return ', '.join([genre.name for genre in self.genre.all()[:3]])
+
+    display_genre.short_description = 'Genre'
+
     def __str__(self):
         return self.title
 
@@ -103,10 +109,7 @@ class Anime(models.Model):
         ordering = ["title"]
         constraints = (
             models.CheckConstraint(check=Q(title__length__gte=2), name='anime_title-length'),
-            models.CheckConstraint(check=Q(sub_title__length_gte=2), name='anime_subtitle-length'),
-            models.CheckConstraint(check=Q(slug__length__gte=2), name='anime_slug-title'),
-            models.CheckConstraint(check=Q(description__length__gte=5), name='anime_description-length'),
-            models.CheckConstraint(check=Q(duration__gte=0), name='anime_duration-length')
+            models.CheckConstraint(check=Q(slug__length__gte=2), name='anime_slug-title')
         )
 
 
@@ -114,6 +117,7 @@ class Episode(models.Model):
     title = models.CharField(max_length=128, blank=False, null=False, unique=True)
     slug = models.SlugField(max_length=128, blank=False, null=False, unique=True)
     episode = models.ForeignKey(to="Anime", on_delete=models.CASCADE, db_index=True)
+    video = models.FileField()
 
     def __str__(self):
         return self.title
